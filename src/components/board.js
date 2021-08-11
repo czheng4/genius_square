@@ -48,9 +48,16 @@ class Board extends Component {
         [false, false, false, false, false, false],
         [false, false, false, false, false, false],
       ],
+      rotation: [true, true, true, true, true],
     };
-    this.shape_positions = [[500, 50]];
-    this.shape_abs_positions = [[0, 0]];
+    this.shape_positions = [
+      [500, 50],
+      [500, 100],
+    ];
+    this.shape_abs_positions = [
+      [0, 0],
+      [0, 0],
+    ];
     // this.random_game();
   }
 
@@ -88,6 +95,7 @@ class Board extends Component {
 
   onShapeDown = (e, id, shape_taken) => {
     const taken = this.state.taken;
+    const rotation = this.state.rotation;
     const abs = e.target.getAbsolutePosition();
     const x = this.shape_positions[id][0] + abs.x; // relative x
     const y = this.shape_positions[id][1] + abs.y; // relateiv y
@@ -95,9 +103,36 @@ class Board extends Component {
     const pos_row = Math.round((y - Const.y) / Const.size);
     var success = true;
 
-    console.log(pos_row, pos_col, taken);
-    if (pos_row >= 6 || pos_col >= 6) return;
+    // free previous taken spot
+    const px = this.shape_positions[id][0] + this.shape_abs_positions[id][0];
+    const py = this.shape_positions[id][1] + this.shape_abs_positions[id][1];
+    const ppos_col = Math.round((px - Const.x) / Const.size);
+    const ppos_row = Math.round((py - Const.y) / Const.size);
+    var in_board = true;
+    for (let i = 0; i < shape_taken.length; i++) {
+      for (let j = 0; j < shape_taken[i].length; j++) {
+        if (ppos_row + i >= 0 && ppos_row + i < 6 && ppos_col + j >= 0 && ppos_col + j < 6) {
+        } else {
+          in_board = false;
+          break;
+        }
+      }
+    }
+    if (in_board) {
+      for (let i = 0; i < shape_taken.length; i++) {
+        for (let j = 0; j < shape_taken[i].length; j++) {
+          taken[ppos_row + i][ppos_col + j] = false;
+        }
+      }
+    }
 
+    if (pos_row >= 6 || pos_col >= 6) {
+      rotation[id] = true;
+      this.setState({ taken: taken, rotation: rotation });
+      return;
+    }
+
+    // put it down
     for (let i = 0; i < shape_taken.length; i++) {
       for (let j = 0; j < shape_taken[i].length; j++) {
         if (
@@ -108,7 +143,6 @@ class Board extends Component {
           (shape_taken[i][j] === false || (taken[pos_row + i][pos_col + j] === false && shape_taken[i][j] === true))
         ) {
         } else {
-          console.log(i, j, pos_row + i, pos_col + j, shape_taken[i][j], taken[pos_row + i][pos_col + j]);
           success = false;
           break;
         }
@@ -116,6 +150,15 @@ class Board extends Component {
     }
 
     if (!success) e.target.setAbsolutePosition({ x: this.shape_abs_positions[id][0], y: this.shape_abs_positions[id][1] });
+    else {
+      rotation[id] = false;
+      for (let i = 0; i < shape_taken.length; i++) {
+        for (let j = 0; j < shape_taken[i].length; j++) {
+          taken[pos_row + i][pos_col + j] = true;
+        }
+      }
+    }
+    this.setState({ taken: taken, rotation: rotation });
     // shape_positions[id][0] = 0;
     // shape_positions[id][1] = 0;
     // console.log("here");
@@ -186,7 +229,16 @@ class Board extends Component {
           onShapeDown={this.onShapeDown}
           onShapeMoveStart={this.onShapeMoveStart}
           id={0}
+          rotation={this.state.rotation[0]}
         />
+        {/* <YellowShape
+          x={this.shape_positions[1][0]}
+          y={this.shape_positions[1][1]}
+          onShapeMove={this.onShapeMove}
+          onShapeDown={this.onShapeDown}
+          onShapeMoveStart={this.onShapeMoveStart}
+          id={1}
+        /> */}
       </>
     );
   }
