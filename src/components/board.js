@@ -1,23 +1,21 @@
 import { Component } from "react";
 import { Rect, Ellipse, Line } from "react-konva";
+import { YellowShape } from "./shapes";
 import * as Const from "./const";
-
-const x = 50;
-const y = 50;
 
 const BlockPiece = ({ i, j }) => {
   return (
     <>
       <Ellipse
-        x={x + j * Const.size + Const.size / 2}
-        y={y + i * Const.size + Const.size / 2 - 2.5}
+        x={Const.x + j * Const.size + Const.size / 2}
+        y={Const.y + i * Const.size + Const.size / 2 - 2.5}
         radiusX={Const.size / 2.5}
         radiusY={Const.size / 3.5}
         fill="grey"
       />
       <Ellipse
-        x={x + j * Const.size + Const.size / 2}
-        y={y + i * Const.size + Const.size / 2 + 2.5}
+        x={Const.x + j * Const.size + Const.size / 2}
+        y={Const.y + i * Const.size + Const.size / 2 + 2.5}
         radiusX={Const.size / 2.5}
         radiusY={Const.size / 3.5}
         fill="grey"
@@ -42,9 +40,89 @@ class Board extends Component {
         [false, false, false, false, false, false],
         [false, false, false, false, false, false],
       ],
+      fill: [
+        [false, false, false, false, false, false],
+        [false, false, false, false, false, false],
+        [false, false, false, false, false, false],
+        [false, false, false, false, false, false],
+        [false, false, false, false, false, false],
+        [false, false, false, false, false, false],
+      ],
     };
+    this.shape_positions = [[500, 50]];
+    this.shape_abs_positions = [[0, 0]];
     // this.random_game();
   }
+
+  onShapeMoveStart = (e, id) => {
+    const abs = e.target.getAbsolutePosition();
+    this.shape_abs_positions[id][0] = abs.x;
+    this.shape_abs_positions[id][1] = abs.y;
+  };
+
+  onShapeMove = (e, id, shape_taken) => {
+    const fill = this.state.fill;
+    const abs = e.target.getAbsolutePosition();
+    const x = this.shape_positions[id][0] + abs.x; // relative x
+    const y = this.shape_positions[id][1] + abs.y; // relateiv y
+    var pos_row, pos_col;
+
+    for (let i = 0; i < fill.length; i++) {
+      for (let j = 0; j < fill[i].length; j++) fill[i][j] = false;
+    }
+    pos_col = Math.round((x - Const.x) / Const.size);
+    pos_row = Math.round((y - Const.y) / Const.size);
+
+    for (let i = 0; i < shape_taken.length; i++) {
+      for (let j = 0; j < shape_taken[i].length; j++) {
+        if (pos_row + i >= 0 && pos_row + i < 6 && pos_col + j >= 0 && pos_col + j < 6 && shape_taken[i][j]) {
+          fill[pos_row + i][pos_col + j] = true;
+        }
+      }
+    }
+    if (pos_row >= 0 && pos_row < 6 && pos_col >= 0 && pos_col < 6) {
+      e.target.setAbsolutePosition({ x: abs.x + pos_col * Const.size + Const.x - x, y: abs.y + pos_row * Const.size + Const.y - y });
+    }
+    this.setState({ fill: fill });
+  };
+
+  onShapeDown = (e, id, shape_taken) => {
+    const taken = this.state.taken;
+    const abs = e.target.getAbsolutePosition();
+    const x = this.shape_positions[id][0] + abs.x; // relative x
+    const y = this.shape_positions[id][1] + abs.y; // relateiv y
+    const pos_col = Math.round((x - Const.x) / Const.size);
+    const pos_row = Math.round((y - Const.y) / Const.size);
+    var success = true;
+
+    console.log(pos_row, pos_col, taken);
+    if (pos_row >= 6 || pos_col >= 6) return;
+
+    for (let i = 0; i < shape_taken.length; i++) {
+      for (let j = 0; j < shape_taken[i].length; j++) {
+        if (
+          pos_row + i >= 0 &&
+          pos_row + i < 6 &&
+          pos_col + j >= 0 &&
+          pos_col + j < 6 &&
+          (shape_taken[i][j] === false || (taken[pos_row + i][pos_col + j] === false && shape_taken[i][j] === true))
+        ) {
+        } else {
+          console.log(i, j, pos_row + i, pos_col + j, shape_taken[i][j], taken[pos_row + i][pos_col + j]);
+          success = false;
+          break;
+        }
+      }
+    }
+
+    if (!success) e.target.setAbsolutePosition({ x: this.shape_abs_positions[id][0], y: this.shape_abs_positions[id][1] });
+    // shape_positions[id][0] = 0;
+    // shape_positions[id][1] = 0;
+    // console.log("here");
+    // this.setState({ shape_positions: shape_positions });
+
+    // console.log(e);
+  };
 
   componentDidMount() {
     this.random_game();
@@ -67,25 +145,26 @@ class Board extends Component {
         num_block_pieces++;
       }
     }
-    console.log(block_pieces);
+    console.log(block_pieces, taken);
     this.setState({ block_pieces: block_pieces, taken: taken });
   };
   render() {
     return (
       <>
-        <Rect x={x} y={y} width={Const.size * 6} height={Const.size * 6} stroke={"grey"} strokeWidth={10} />
+        <Rect x={Const.x} y={Const.y} width={Const.size * 6} height={Const.size * 6} stroke={"grey"} strokeWidth={10} />
         {/* <BlockPiece i={3} j={4} /> */}
         {this.state.taken.map((rows, i) => {
           return rows.map((ele, j) => {
             return (
               <Rect
-                x={x + j * Const.size + 0.5}
-                y={y + i * Const.size + 0.5}
+                x={Const.x + j * Const.size}
+                y={Const.y + i * Const.size}
                 width={Const.size}
                 height={Const.size}
                 stroke="grey"
                 strokeWidth={1.2}
                 key={`${i} ${j}`}
+                fill={this.state.fill[i][j] ? "#DCDCDC" : "white"}
               />
             );
           });
@@ -100,6 +179,14 @@ class Board extends Component {
             }
           });
         })}
+        <YellowShape
+          x={this.shape_positions[0][0]}
+          y={this.shape_positions[0][1]}
+          onShapeMove={this.onShapeMove}
+          onShapeDown={this.onShapeDown}
+          onShapeMoveStart={this.onShapeMoveStart}
+          id={0}
+        />
       </>
     );
   }

@@ -60,15 +60,20 @@ export class YellowShape extends Component {
       y: props.y,
       opacity: 1,
       drag: false,
+      taken: [
+        [false, true, false],
+        [true, true, true],
+      ],
     };
     this.x = props.x;
     this.y = props.y;
     this.offset_x = props.x;
     this.offset_y = props.y;
   }
+
   render() {
-    const x = this.offset_x;
-    const y = this.offset_y;
+    const x = this.props.x;
+    const y = this.props.y;
     return (
       <>
         <Group
@@ -81,17 +86,20 @@ export class YellowShape extends Component {
             const container = e.target.getStage().container();
             container.style.cursor = "default";
           }}
+          onDragStart={(e) => {
+            this.x = e.target.getAbsolutePosition().x + this.offset_x;
+            this.y = e.target.getAbsolutePosition().y + this.offset_y;
+            this.props.onShapeMoveStart(e, this.props.id);
+          }}
           onDragMove={(e) => {
-            // console.log(e.target.getAbsolutePosition());
-            // console.log(e.target.x() + x, e.target.y() + y);
-            this.setState({ opacity: 0.7, drag: true });
+            this.props.onShapeMove(e, this.props.id, this.state.taken);
+            this.setState({ opacity: 0.7, drag: true, move_x: 100 });
           }}
           onDragEnd={(e) => {
             this.x = e.target.getAbsolutePosition().x + this.offset_x;
             this.y = e.target.getAbsolutePosition().y + this.offset_y;
-            // console.log(this.x, this.y);
-            // console.log(e.target.x() + this.offset_x);
             this.setState({ opacity: 1, drag: false });
+            this.props.onShapeDown(e, this.props.id, this.state.taken);
           }}
           onMouseDown={(e) => {
             this.setState({ opacity: 0.7 });

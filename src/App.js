@@ -11,7 +11,6 @@ function App() {
       <Stage width={window.innerWidth} height={window.innerHeight}>
         <Layer>
           <Board />
-          <YellowShape x={500} y={20} />
         </Layer>
       </Stage>
     </div>
