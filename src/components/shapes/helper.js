@@ -44,7 +44,7 @@ export const RotateIcons = ({ x, y, onRotate }) => {
   const arrow_y = y - radius * Math.sin((Math.PI / 180) * 30);
   return (
     <>
-      <Rect x={x - radius - 5} y={y - radius - 5} width={radius * 2 + 10} height={radius * 2 + 10} onClick={onRotate} stroke="black" />
+      <Rect x={x - radius - 7} y={y - radius - 7} width={radius * 2 + 14} height={radius * 2 + 14} onClick={onRotate} />
       <Line points={[arrow_x, arrow_y - 7, arrow_x, arrow_y, arrow_x - 7, arrow_y]} stroke="black" lineJoin="round" />
       <Arc x={x} y={y} angle={310} rotation={25} innerRadius={radius} outerRadius={radius + 0.5} stroke="black" strokeWidth={1} />
     </>
@@ -116,11 +116,11 @@ export class Shape extends Component {
         >
           {this.state.taken.map((rows, i) => {
             return rows.map((ele, j) => {
-              if (ele) return <Square x={x + size * j} y={y + size * i} opacity={this.state.opacity} fill={this.fill} />;
+              if (ele) return <Square x={x + size * j} y={y + size * i} opacity={this.state.opacity} fill={this.fill} key={`block ${i} ${j}`} />;
               else return null;
             });
           })}
-          {this.props.rotation && this.takens.length != 1 && (
+          {this.props.rotation && this.takens.length !== 1 && (
             <RotateIcons x={x + size * this.state.taken[0].length + 20} y={y} opacity={this.state.opacity} onRotate={this.onRotate} />
           )}
         </Group>
@@ -128,7 +128,10 @@ export class Shape extends Component {
         {this.state.drag &&
           this.state.taken.map((rows, i) => {
             return rows.map((ele, j) => {
-              if (ele) return <Square x={rel_x + size * j} y={rel_y + size * i} opacity={this.state.opacity} fill={this.fill} />;
+              if (ele)
+                return (
+                  <Square x={rel_x + size * j} y={rel_y + size * i} opacity={this.state.opacity} fill={this.fill} key={`original-block ${i} ${j}`} />
+                );
               else return null;
             });
           })}

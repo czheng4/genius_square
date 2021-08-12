@@ -52,15 +52,15 @@ class Board extends Component {
       rotation: [true, true, true, true, true, true, true, true, true],
     };
     this.shape_positions = [
-      [500, Const.y],
-      [750, Const.y],
-      [1000, Const.y],
-      [500, Const.y + 250],
-      [750, Const.y + 250],
-      [1000, Const.y + 250],
-      [500, Const.y + 500],
-      [750, Const.y + 500],
-      [1000, Const.y + 500],
+      [450, 30],
+      [670, 30],
+      [890, 30],
+      [450, 230],
+      [670, 230],
+      [890, 230],
+      [450, 430],
+      [670, 430],
+      [890, 430],
     ];
     this.shape_abs_positions = [
       [0, 0],
@@ -73,7 +73,6 @@ class Board extends Component {
       [0, 0],
       [0, 0],
     ];
-    // this.random_game();
   }
 
   onShapeMoveStart = (e, id) => {
@@ -171,6 +170,17 @@ class Board extends Component {
           if (shape_taken[i][j]) taken[pos_row + i][pos_col + j] = true;
         }
       }
+
+      var win = true;
+      for (let i = 0; i < taken.length; i++) {
+        for (let j = 0; j < taken[i].length; j++) {
+          if (!taken[i][j]) {
+            win = false;
+            break;
+          }
+        }
+      }
+      if (win) this.props.onWin();
     }
     this.setState({ taken: taken, rotation: rotation });
   };
@@ -190,13 +200,12 @@ class Board extends Component {
     while (num_block_pieces < 7) {
       let row_i = Math.floor(Math.random() * 6);
       let col_i = Math.floor(Math.random() * 6);
-      if (taken[row_i][col_i] == false) {
+      if (taken[row_i][col_i] === false) {
         taken[row_i][col_i] = true;
         block_pieces[row_i][col_i] = true;
         num_block_pieces++;
       }
     }
-    console.log(block_pieces, taken);
     this.setState({ block_pieces: block_pieces, taken: taken });
   };
   render() {
