@@ -183,8 +183,8 @@ class Board extends Component {
         }
       }
       if (win) this.props.onWin();
+      this.setState({ taken: taken, rotation: rotation });
     }
-    this.setState({ taken: taken, rotation: rotation });
   };
 
   componentDidMount() {
