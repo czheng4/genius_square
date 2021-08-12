@@ -22,7 +22,10 @@ class App extends Component {
       <div>
         <div className="ml-5 mt-2 mb-0">
           <h2>Genius Square Game</h2>
-          <p>Please move the blocks to fill out the 6x6 grid. You can change the block's shape by clicking rotation icons</p>
+          <p>
+            Please move the colored shapes to fill out the 6x6 grid. Each game starts with 7 "blockers". You can clock rotation icons to change the
+            shape's orientation.
+          </p>
           <button className="btn btn-primary" onClick={this.onNewGame}>
             Start a new game
           </button>
