@@ -1,0 +1,9 @@
+export { default as YellowShape } from "./yellow-shape";
+export { default as RedShape } from "./red-shape";
+export { default as OrangeShape } from "./orange-shape";
+export { default as LightblueShape } from "./lightblue-shape";
+export { default as PurpleShape } from "./purple-shape";
+export { default as GreenShape } from "./green-shape";
+export { default as EarthShape } from "./earth-shape";
+export { default as BlueShape } from "./blue-shape";
+export { default as GreyShape } from "./grey-shape";

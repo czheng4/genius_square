@@ -2,10 +2,10 @@ import { Rect, Line, Group, Shape, Arrow, Arc } from "react-konva";
 import React, { Component } from "react";
 
 const size = 60 - 3;
-const padding = 4;
+const padding = 7;
 const strokeWidth = 0.5;
 
-const Square = ({ x, y, opacity }) => {
+export const Square = ({ x, y, opacity, fill }) => {
   var points = [x + size, y];
   points = [
     ...points,
@@ -22,10 +22,9 @@ const Square = ({ x, y, opacity }) => {
   ];
   return (
     <>
-      <Line points={points} stroke={"red"} strokeWidth={0.1} opacity={0.3 * opacity} fill={"red"} closed={true} />
-
+      <Line points={points} stroke={fill} strokeWidth={0.1} opacity={0.4 * opacity} fill={fill} closed={true} />
       <Rect x={x} y={y} width={size} height={size} stroke="black" strokeWidth={strokeWidth} opacity={0.5 * opacity} />
-      <Rect x={x} y={y} width={size} height={size} fill="red" shadowBlur={1} shadowOpacity={0.5 * opacity} shadowColor={"red"} opacity={opacity} />
+      <Rect x={x} y={y} width={size} height={size} fill={fill} shadowBlur={1} shadowOpacity={0.5 * opacity} shadowColor={"red"} opacity={opacity} />
     </>
   );
 };
@@ -36,7 +35,7 @@ export const RotateIcons = ({ x, y, onRotate }) => {
   const arrow_y = y - radius * Math.sin((Math.PI / 180) * 30);
   return (
     <>
-      <Rect x={x - radius} y={y - radius} width={radius * 2.5} height={radius * 2.5} onClick={onRotate} />
+      <Rect x={x - radius - 5} y={y - radius - 5} width={radius * 2 + 10} height={radius * 2 + 10} onClick={onRotate} stroke="black" />
       <Line points={[arrow_x, arrow_y - 7, arrow_x, arrow_y, arrow_x - 7, arrow_y]} stroke="black" lineJoin="round" />
       <Arc x={x} y={y} angle={310} rotation={25} innerRadius={radius} outerRadius={radius + 0.5} stroke="black" strokeWidth={1} />
     </>
@@ -78,6 +77,7 @@ export class YellowShape extends Component {
     this.y = props.y;
     this.offset_x = props.x;
     this.offset_y = props.y;
+    this.fill = "#DEC20B";
   }
   onRotate = () => {
     const new_rotation = (this.state.rotation + 1) % 4;
@@ -87,9 +87,12 @@ export class YellowShape extends Component {
     });
     this.setState({ rotation: new_rotation, taken: new_taken });
   };
+
   render() {
     const x = this.props.x;
     const y = this.props.y;
+    const rel_x = this.x;
+    const rel_y = this.y;
     return (
       <>
         <Group
@@ -126,9 +129,9 @@ export class YellowShape extends Component {
         >
           {this.state.rotation == 0 && (
             <>
-              <Square x={x + size} y={y} opacity={this.state.opacity} />
+              <Square x={x + size} y={y} opacity={this.state.opacity} fill={this.fill} />
               {[0, 1, 2].map((i) => {
-                return <Square x={x + size * i} y={y + size} key={i} opacity={this.state.opacity} />;
+                return <Square x={x + size * i} y={y + size} key={i} opacity={this.state.opacity} fill={this.fill} />;
               })}
               {this.props.rotation && <RotateIcons x={x + size * 3 + 20} y={y} opacity={this.state.opacity} onRotate={this.onRotate} />}
             </>
@@ -136,9 +139,9 @@ export class YellowShape extends Component {
 
           {this.state.rotation == 1 && (
             <>
-              <Square x={x + size} y={y + size} opacity={this.state.opacity} />
+              <Square x={x + size} y={y + size} opacity={this.state.opacity} fill={this.fill} />
               {[0, 1, 2].map((i) => {
-                return <Square x={x} y={y + size * i} key={i} opacity={this.state.opacity} />;
+                return <Square x={x} y={y + size * i} key={i} opacity={this.state.opacity} fill={this.fill} />;
               })}
               {this.props.rotation && <RotateIcons x={x + size * 2 + 20} y={y} opacity={this.state.opacity} onRotate={this.onRotate} />}
             </>
@@ -146,9 +149,9 @@ export class YellowShape extends Component {
 
           {this.state.rotation == 2 && (
             <>
-              <Square x={x + size} y={y + size} opacity={this.state.opacity} />
+              <Square x={x + size} y={y + size} opacity={this.state.opacity} fill={this.fill} />
               {[0, 1, 2].map((i) => {
-                return <Square x={x + size * i} y={y} key={i} opacity={this.state.opacity} />;
+                return <Square x={x + size * i} y={y} key={i} opacity={this.state.opacity} fill={this.fill} />;
               })}
               {this.props.rotation && <RotateIcons x={x + size * 3 + 20} y={y} opacity={this.state.opacity} onRotate={this.onRotate} />}
             </>
@@ -156,36 +159,51 @@ export class YellowShape extends Component {
 
           {this.state.rotation == 3 && (
             <>
-              <Square x={x} y={y + size} opacity={this.state.opacity} />
+              <Square x={x} y={y + size} opacity={this.state.opacity} fill={this.fill} />
               {[0, 1, 2].map((i) => {
-                return <Square x={x + size} y={y + size * i} key={i} opacity={this.state.opacity} />;
+                return <Square x={x + size} y={y + size * i} key={i} opacity={this.state.opacity} fill={this.fill} />;
               })}
               {this.props.rotation && <RotateIcons x={x + size * 2 + 20} y={y} opacity={this.state.opacity} onRotate={this.onRotate} />}
             </>
           )}
         </Group>
 
-        {this.state.drag && (
+        {this.state.drag && this.state.rotation === 0 && (
           <>
-            <Square x={this.x + size} y={this.y} opacity={0.5} />
+            <Square x={rel_x + size} y={rel_y} opacity={0.5} fill={this.fill} />
             {[0, 1, 2].map((i) => {
-              return <Square x={this.x + size * i} y={this.y + size} key={i} opacity={0.5} />;
+              return <Square x={rel_x + size * i} y={rel_y + size} key={i} opacity={0.5} fill={this.fill} />;
             })}
-            {/* <RotateIcons x={this.x + size * 3 + 20} y={this.y} opacity={0.5} /> */}
+          </>
+        )}
+
+        {this.state.drag && this.state.rotation == 1 && (
+          <>
+            <Square x={rel_x + size} y={rel_y + size} opacity={this.state.opacity} fill={this.fill} />
+            {[0, 1, 2].map((i) => {
+              return <Square x={rel_x} y={rel_y + size * i} key={i} opacity={this.state.opacity} fill={this.fill} />;
+            })}
+          </>
+        )}
+
+        {this.state.drag && this.state.rotation == 2 && (
+          <>
+            <Square x={rel_x + size} y={rel_y + size} opacity={this.state.opacity} fill={this.fill} />
+            {[0, 1, 2].map((i) => {
+              return <Square x={rel_x + size * i} y={rel_y} key={i} opacity={this.state.opacity} fill={this.fill} />;
+            })}
+          </>
+        )}
+
+        {this.state.drag && this.state.rotation == 3 && (
+          <>
+            <Square x={rel_x} y={rel_y + size} opacity={this.state.opacity} fill={this.fill} />
+            {[0, 1, 2].map((i) => {
+              return <Square x={rel_x + size} y={rel_y + size * i} key={i} opacity={this.state.opacity} fill={this.fill} />;
+            })}
           </>
         )}
       </>
     );
   }
 }
-
-class GeniusShape extends Component {
-  constructor(props) {
-    super(props);
-  }
-  render() {
-    return <Square x={this.props.x} y={this.props.y} />;
-  }
-}
-
-export default GeniusShape;

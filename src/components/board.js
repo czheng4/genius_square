@@ -1,8 +1,9 @@
 import { Component } from "react";
-import { Rect, Ellipse, Line } from "react-konva";
-import { YellowShape } from "./shapes";
+import { Rect, Ellipse } from "react-konva";
+import { YellowShape, RedShape, OrangeShape, PurpleShape, LightblueShape, GreenShape, EarthShape, BlueShape, GreyShape } from "./shapes/shapes";
 import * as Const from "./const";
 
+/** Drawing the block piece */
 const BlockPiece = ({ i, j }) => {
   return (
     <>
@@ -48,13 +49,27 @@ class Board extends Component {
         [false, false, false, false, false, false],
         [false, false, false, false, false, false],
       ],
-      rotation: [true, true, true, true, true],
+      rotation: [true, true, true, true, true, true, true, true, true],
     };
     this.shape_positions = [
-      [500, 50],
-      [500, 100],
+      [500, Const.y],
+      [750, Const.y],
+      [1000, Const.y],
+      [500, Const.y + 250],
+      [750, Const.y + 250],
+      [1000, Const.y + 250],
+      [500, Const.y + 500],
+      [750, Const.y + 500],
+      [1000, Const.y + 500],
     ];
     this.shape_abs_positions = [
+      [0, 0],
+      [0, 0],
+      [0, 0],
+      [0, 0],
+      [0, 0],
+      [0, 0],
+      [0, 0],
       [0, 0],
       [0, 0],
     ];
@@ -121,11 +136,10 @@ class Board extends Component {
     if (in_board) {
       for (let i = 0; i < shape_taken.length; i++) {
         for (let j = 0; j < shape_taken[i].length; j++) {
-          taken[ppos_row + i][ppos_col + j] = false;
+          if (!this.state.block_pieces[ppos_row + i][ppos_col + j]) taken[ppos_row + i][ppos_col + j] = false;
         }
       }
     }
-
     if (pos_row >= 6 || pos_col >= 6) {
       rotation[id] = true;
       this.setState({ taken: taken, rotation: rotation });
@@ -154,17 +168,11 @@ class Board extends Component {
       rotation[id] = false;
       for (let i = 0; i < shape_taken.length; i++) {
         for (let j = 0; j < shape_taken[i].length; j++) {
-          taken[pos_row + i][pos_col + j] = true;
+          if (shape_taken[i][j]) taken[pos_row + i][pos_col + j] = true;
         }
       }
     }
     this.setState({ taken: taken, rotation: rotation });
-    // shape_positions[id][0] = 0;
-    // shape_positions[id][1] = 0;
-    // console.log("here");
-    // this.setState({ shape_positions: shape_positions });
-
-    // console.log(e);
   };
 
   componentDidMount() {
@@ -179,7 +187,7 @@ class Board extends Component {
     }
 
     var num_block_pieces = 0;
-    while (num_block_pieces < 6) {
+    while (num_block_pieces < 7) {
       let row_i = Math.floor(Math.random() * 6);
       let col_i = Math.floor(Math.random() * 6);
       if (taken[row_i][col_i] == false) {
@@ -231,14 +239,82 @@ class Board extends Component {
           id={0}
           rotation={this.state.rotation[0]}
         />
-        {/* <YellowShape
+        <RedShape
           x={this.shape_positions[1][0]}
           y={this.shape_positions[1][1]}
           onShapeMove={this.onShapeMove}
           onShapeDown={this.onShapeDown}
           onShapeMoveStart={this.onShapeMoveStart}
           id={1}
-        /> */}
+          rotation={this.state.rotation[1]}
+        />
+        <OrangeShape
+          x={this.shape_positions[2][0]}
+          y={this.shape_positions[2][1]}
+          onShapeMove={this.onShapeMove}
+          onShapeDown={this.onShapeDown}
+          onShapeMoveStart={this.onShapeMoveStart}
+          id={2}
+          rotation={this.state.rotation[2]}
+        />
+        <LightblueShape
+          x={this.shape_positions[3][0]}
+          y={this.shape_positions[3][1]}
+          onShapeMove={this.onShapeMove}
+          onShapeDown={this.onShapeDown}
+          onShapeMoveStart={this.onShapeMoveStart}
+          id={3}
+          rotation={this.state.rotation[3]}
+        />
+        <PurpleShape
+          x={this.shape_positions[4][0]}
+          y={this.shape_positions[4][1]}
+          onShapeMove={this.onShapeMove}
+          onShapeDown={this.onShapeDown}
+          onShapeMoveStart={this.onShapeMoveStart}
+          id={4}
+          rotation={this.state.rotation[4]}
+        />
+
+        <GreenShape
+          x={this.shape_positions[5][0]}
+          y={this.shape_positions[5][1]}
+          onShapeMove={this.onShapeMove}
+          onShapeDown={this.onShapeDown}
+          onShapeMoveStart={this.onShapeMoveStart}
+          id={5}
+          rotation={this.state.rotation[5]}
+        />
+
+        <EarthShape
+          x={this.shape_positions[6][0]}
+          y={this.shape_positions[6][1]}
+          onShapeMove={this.onShapeMove}
+          onShapeDown={this.onShapeDown}
+          onShapeMoveStart={this.onShapeMoveStart}
+          id={6}
+          rotation={this.state.rotation[6]}
+        />
+
+        <BlueShape
+          x={this.shape_positions[7][0]}
+          y={this.shape_positions[7][1]}
+          onShapeMove={this.onShapeMove}
+          onShapeDown={this.onShapeDown}
+          onShapeMoveStart={this.onShapeMoveStart}
+          rotation={this.state.rotation[7]}
+          id={7}
+        />
+
+        <GreyShape
+          x={this.shape_positions[8][0]}
+          y={this.shape_positions[8][1]}
+          onShapeMove={this.onShapeMove}
+          onShapeDown={this.onShapeDown}
+          onShapeMoveStart={this.onShapeMoveStart}
+          rotation={this.state.rotation[8]}
+          id={8}
+        />
       </>
     );
   }
