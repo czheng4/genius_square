@@ -33,7 +33,7 @@ class App extends Component {
             </span>
           )}
         </div>
-        <Stage width={window.innerWidth} height={window.innerHeight}>
+        <Stage width={1200} height={700}>
           <Layer>
             <Board key={this.state.num_game} onWin={this.onWin} />
           </Layer>
