@@ -88,11 +88,13 @@ class Board extends Component {
     const y = this.shape_positions[id][1] + abs.y; // relateiv y
     var pos_row, pos_col;
 
+    pos_col = Math.round((x - Const.x) / Const.size);
+    pos_row = Math.round((y - Const.y) / Const.size);
+
+    if (pos_row >= 6 || pos_col >= 6) return;
     for (let i = 0; i < fill.length; i++) {
       for (let j = 0; j < fill[i].length; j++) fill[i][j] = false;
     }
-    pos_col = Math.round((x - Const.x) / Const.size);
-    pos_row = Math.round((y - Const.y) / Const.size);
 
     for (let i = 0; i < shape_taken.length; i++) {
       for (let j = 0; j < shape_taken[i].length; j++) {

@@ -44,7 +44,7 @@ export const RotateIcons = ({ x, y, onRotate }) => {
   const arrow_y = y - radius * Math.sin((Math.PI / 180) * 30);
   return (
     <>
-      <Rect x={x - radius - 7} y={y - radius - 7} width={radius * 2 + 14} height={radius * 2 + 14} onClick={onRotate} />
+      <Rect x={x - radius - 7} y={y - radius - 7} width={radius * 2 + 14} height={radius * 2 + 14} onClick={onRotate} onTap={onRotate} />
       <Line points={[arrow_x, arrow_y - 7, arrow_x, arrow_y, arrow_x - 7, arrow_y]} stroke="black" lineJoin="round" />
       <Arc x={x} y={y} angle={310} rotation={25} innerRadius={radius} outerRadius={radius + 0.5} stroke="black" strokeWidth={1} />
     </>
@@ -96,10 +96,10 @@ export class Shape extends Component {
             this.x = e.target.getAbsolutePosition().x + this.offset_x;
             this.y = e.target.getAbsolutePosition().y + this.offset_y;
             this.props.onShapeMoveStart(e, this.props.id);
+            this.setState({ opacity: 0.7, drag: true, move_x: 100 });
           }}
           onDragMove={(e) => {
             this.props.onShapeMove(e, this.props.id, this.state.taken);
-            this.setState({ opacity: 0.7, drag: true, move_x: 100 });
           }}
           onDragEnd={(e) => {
             this.x = e.target.getAbsolutePosition().x + this.offset_x;
